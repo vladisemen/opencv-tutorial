@@ -25,8 +25,8 @@ def find_features(img1):
 def find_contours_of_cards(image):
     blurred = cv2.GaussianBlur(image, (3, 3), 0)
     T, thresh_img = cv2.threshold(blurred, 215, 255, cv2.THRESH_BINARY)
-    (_, cnts, _) = cv2.findContours(thresh_img, cv2.RETR_EXTERNAL,
-                                    cv2.CHAIN_APPROX_SIMPLE)
+    cnts, hierarchy = cv2.findContours(thresh_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
     return cnts
 
 
@@ -51,6 +51,12 @@ def draw_rectangle_aroud_cards(cards_coordinates, image):
 
 if __name__ == '__main__':
     main_image = cv2.imread('images/cards/main_image/cards.JPG')
+    gray_main_image = cv2.cvtColor(main_image, cv2.COLOR_BGR2GRAY)
+    contours = find_contours_of_cards(gray_main_image)
+    cards_location = find_coordinates_of_cards(contours, gray_main_image)
+    draw_rectangle_aroud_cards(cards_location, main_image)
+
+    main_image = cv2.imread('images/cards/main_image/cards_bad.JPG')
     gray_main_image = cv2.cvtColor(main_image, cv2.COLOR_BGR2GRAY)
     contours = find_contours_of_cards(gray_main_image)
     cards_location = find_coordinates_of_cards(contours, gray_main_image)
